@@ -12,10 +12,11 @@ import java.util.Set;
  */
 public class Arrays {
 	
-	private static final int[] EMPTY_INT_PRIMITIVE_ARRAY = new int[0];
-	private static final long[] EMPTY_LONG_PRIMITIVE_ARRAY = new long[0];
-	private static final Integer[] EMPTY_INTEGER_OBJECT_ARRAY = new Integer[0];
-	private static final Long[] EMPTY_LONG_OBJECT_ARRAY = new Long[0];
+	public static final int[] EMPTY_INT_PRIMITIVE_ARRAY = {};// new int[0];
+	public static final long[] EMPTY_LONG_PRIMITIVE_ARRAY = {};//new long[0];
+	public static final Integer[] EMPTY_INTEGER_OBJECT_ARRAY = {};//new Integer[0];
+	public static final Long[] EMPTY_LONG_OBJECT_ARRAY = {};//new Long[0];
+	public static final String[] EMPTY_STRING_ARRAY = {};
 	
 	private Arrays() {
 		throw new AssertionError("Private constructor.");

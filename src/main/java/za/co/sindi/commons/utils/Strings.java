@@ -288,4 +288,20 @@ public final class Strings {
 		
 		return sequence.subSequence(sequenceLength - length, sequenceLength).toString();
 	}
+	
+	public static String requireNonEmpty(CharSequence sequence) {
+		if (isNullOrEmpty(sequence)) {
+			throw new IllegalArgumentException();
+		}
+		
+		return sequence.toString();
+	}
+	
+	public static String requireNonEmpty(CharSequence sequence, String message) {
+		if (isNullOrEmpty(sequence)) {
+			throw new IllegalArgumentException(message);
+		}
+		
+		return sequence.toString();
+	}
 }

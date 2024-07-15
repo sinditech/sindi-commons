@@ -4,14 +4,12 @@
 package za.co.sindi.commons.net.http;
 
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.net.http.HttpRequest.BodyPublisher;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Objects;
 
 import za.co.sindi.commons.utils.URLEncoderUtils;
 
