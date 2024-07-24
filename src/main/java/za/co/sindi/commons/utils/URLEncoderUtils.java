@@ -6,7 +6,6 @@ package za.co.sindi.commons.utils;
 import java.io.ByteArrayOutputStream;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.BitSet;
 import java.util.Map;
 import java.util.Objects;
@@ -234,7 +233,7 @@ public final class URLEncoderUtils {
 		return baos.toByteArray();
 	}
 	
-	private static byte[] decode(byte[] data) {
+	private static byte[] decode(byte[] data, boolean treatPlusAsBlank) {
 		// TODO Auto-generated method stub
 		if (data == null || data.length == 0) {
 			return data;
@@ -261,6 +260,8 @@ public final class URLEncoderUtils {
 				
 				baos.write(((digit1 << 4) | digit2) & 0xFF);
 				i += 2;
+			} else if (treatPlusAsBlank && data[i] == '+'){
+				baos.write((byte)' ');
 			} else {
 				baos.write(data[i]);
 			}
@@ -279,14 +280,14 @@ public final class URLEncoderUtils {
 		return new String(encode(str.getBytes(charset), safeCharacters, treatBlankAsPlus), charset);
 	}
 	
-	public static String urlDecode(String str, String charsetName) {
-		return urlDecode(str, Charset.forName(charsetName));
+	public static String urlDecode(String str, String charsetName, boolean treatPlusAsBlank) {
+		return urlDecode(str, Charset.forName(charsetName), treatPlusAsBlank);
 	}
 	
-	public static String urlDecode(String str, Charset charset) {
+	public static String urlDecode(String str, Charset charset, boolean treatPlusAsBlank) {
 //		URLDecoder decoder = new URLDecoder();
 //		return new String(decoder.decode(str.getBytes(charset)), charset);
-		return new String(decode(str.getBytes(charset)), charset);
+		return new String(decode(str.getBytes(charset), treatPlusAsBlank), charset);
 	}
 	
 	public static String encodeScheme(String scheme, String charsetName) {
@@ -337,6 +338,10 @@ public final class URLEncoderUtils {
 		return urlEncode(fragment, charset, FRAGMENT, false);
 	}
 	
+	public static String formatQueryParameters(Map<String, Object> parameters, Charset charset) {
+	    return formatQueryParameters(parameters, '&', charset);
+	}
+	
 	public static String formatQueryParameters(Map<String, Object> parameters, final char parameterSeparator, Charset charset) {
 		StringBuilder formBodyBuilder = new StringBuilder();
 	    for (Map.Entry<String, Object> singleEntry : parameters.entrySet()) {
@@ -351,6 +356,10 @@ public final class URLEncoderUtils {
 	    return encodeQuery(formBodyBuilder.toString(), charset);
 	}
 	
+	public static String formatQueryParametersNatively(Map<String, Object> parameters, Charset charset) {
+	    return formatQueryParameters(parameters, '&', charset);
+	}
+	
 	public static String formatQueryParametersNatively(Map<String, Object> parameters, final char parameterSeparator, Charset charset) {
 		StringBuilder formBodyBuilder = new StringBuilder();
 	    for (Map.Entry<String, Object> singleEntry : parameters.entrySet()) {
@@ -363,9 +372,5 @@ public final class URLEncoderUtils {
 	    }
 	    
 	    return formBodyBuilder.toString();
-	}
-	
-	public static void main(String[] args) {
-		System.out.println(URLEncoderUtils.encodeQuery(")(*&^$%@!", StandardCharsets.UTF_8));
 	}
 }

@@ -275,10 +275,10 @@ public class URLBuilder {
 				sb.append("&");
 			}
 			
-			String encodedKey = URLEncoderUtils.encodePath(entry.getKey(), encodingCharset);
+			String encodedKey = URLEncoderUtils.encodeQuery(entry.getKey(), encodingCharset);
 			String[] mapValues = entry.getValue();
 			for (int i = 0; i < mapValues.length; i++) {
-				sb.append(encodedKey).append("=").append(URLEncoderUtils.encodePath(mapValues[i], encodingCharset));
+				sb.append(encodedKey).append("=").append(URLEncoderUtils.encodeQuery(mapValues[i], encodingCharset));
 			}
 		}
 		
