@@ -8,6 +8,7 @@ on:
       - main
       - develop
     types: [closed]
+  workflow_dispatch:
 
 jobs:
   publish:
