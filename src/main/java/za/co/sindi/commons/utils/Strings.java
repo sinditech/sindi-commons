@@ -3,6 +3,7 @@
  */
 package za.co.sindi.commons.utils;
 
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -175,13 +176,25 @@ public final class Strings {
 		return sb.toString();
 	}
 	
+	public static String toLowerCase(String string) {
+		return toLowerCase(string, Locale.ROOT);
+	}
+	
+	public static String toLowerCase(String string, Locale locale) {
+		if (isNull(string)) {
+			return null;
+		}
+		
+		return string.toLowerCase(locale == null ? Locale.ROOT : locale);
+	}
+	
 	public static String toLowerCase(CharSequence sequence) {
 		if (isNull(sequence)) {
 			return null;
 		}
 		
 		if (sequence instanceof String) {
-			return ((String)sequence).toLowerCase();
+			return toLowerCase((String)sequence);
 		}
 		
 		StringBuilder sb = new StringBuilder();
@@ -197,13 +210,25 @@ public final class Strings {
 		return sb.toString();
 	}
 	
+	public static String toUpperCase(String string) {
+		return toUpperCase(string, Locale.ROOT);
+	}
+	
+	public static String toUpperCase(String string, Locale locale) {
+		if (isNull(string)) {
+			return null;
+		}
+		
+		return string.toUpperCase(locale == null ? Locale.ROOT : locale);
+	}
+	
 	public static String toUpperCase(CharSequence sequence) {
 		if (isNull(sequence)) {
 			return null;
 		}
 		
 		if (sequence instanceof String) {
-			return ((String)sequence).toUpperCase();
+			return toUpperCase((String)sequence);
 		}
 		
 		StringBuilder sb = new StringBuilder();
