@@ -61,8 +61,8 @@ public class SSEEventProcessor extends SubmissionPublisher<Event> implements Pro
 		// TODO Auto-generated method stub
 		String input = removeLeadingBOM(item).trim();
 		if (input.isEmpty()) {
-			if (commentFound && fireCommentEvent) {
-				submit(new CommentEvent(comment));
+			if (commentFound) {
+				if (fireCommentEvent) submit(new CommentEvent(comment));
 			} else {
 				if (eventType.isEmpty()) eventType = DEFAULT_EVENT_TYPE;
 				String data = dataBuffer.toString();
