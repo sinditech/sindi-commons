@@ -41,6 +41,10 @@ public class Either<L, R> implements Serializable {
 			throw new IllegalArgumentException("Both left and right are empty.");
 		}
 		
+		if (left.isPresent() && right.isPresent()) {
+			throw new IllegalArgumentException("Both left and right have data present.");
+		}
+		
 		this.left = left;
 		this.right = right;
 	}
