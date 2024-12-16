@@ -85,7 +85,7 @@ public class SAIDNumberValidator implements Validator<String> {
 		int currentYear = calendar.get(Calendar.YEAR);
 		int currentCentury = currentYear / 100;
 		int year = Integer.parseInt(String.valueOf(currentCentury) + dateString.substring(0, 2));
-		if ((year + 16) > currentYear) {
+		if (year > currentYear || (year + 16) > currentYear) {
 			currentCentury--;
 		}
 		
