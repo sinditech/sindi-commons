@@ -107,6 +107,14 @@ public class SSEEventProcessor extends SubmissionPublisher<Event> implements Pro
 	@Override
 	public void onComplete() {
 		// TODO Auto-generated method stub
+		if (dataBuffer.length() > 0) {
+			if (eventType.isEmpty()) eventType = DEFAULT_EVENT_TYPE;
+			String data = dataBuffer.toString();
+			submit(new DataMessageEvent(eventType, removeTrailingLineFeed(data), lastEventId));
+			eventType = "";
+			dataBuffer.setLength(0);
+		}
+		
 		close();
 	}
 	
