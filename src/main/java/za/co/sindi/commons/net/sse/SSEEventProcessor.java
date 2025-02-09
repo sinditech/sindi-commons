@@ -109,15 +109,6 @@ public class SSEEventProcessor extends SubmissionPublisher<Event> implements Pro
 		// TODO Auto-generated method stub
 		close();
 	}
-
-//	/* (non-Javadoc)
-//	 * @see java.util.concurrent.Flow.Publisher#subscribe(java.util.concurrent.Flow.Subscriber)
-//	 */
-//	@Override
-//	public void subscribe(Subscriber<? super Event> subscriber) {
-//		// TODO Auto-generated method stub
-//		
-//	}
 	
 	private String removeLeadingBOM(final String input) {
 		return input.startsWith(UTF8_BOM) ? input.substring(UTF8_BOM.length()) : input; 

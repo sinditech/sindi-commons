@@ -51,7 +51,6 @@ public class AllEventSubscriber implements Subscriber<Event> {
 	/* (non-Javadoc)
 	 * @see java.util.concurrent.Flow.Subscriber#onComplete()
 	 */
-	
 	@Override
 	public void onComplete() {
 		// TODO Auto-generated method stub
@@ -60,5 +59,13 @@ public class AllEventSubscriber implements Subscriber<Event> {
 	
 	public Stream<Event> getEventStream() {
 		return events.stream();
+	}
+	
+	public boolean iComplete() {
+		return isComplete.get();
+	}
+	
+	public Throwable getError() {
+		return throwableAtomicReference.get();
 	}
 }
