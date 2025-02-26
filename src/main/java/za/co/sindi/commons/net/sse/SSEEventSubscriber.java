@@ -1,8 +1,7 @@
 package za.co.sindi.commons.net.sse;
 
-import java.util.concurrent.Flow.Processor;
+import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
-import java.util.concurrent.SubmissionPublisher;
 
 /**
  * The implementation of the <a href="https://html.spec.whatwg.org/multipage/server-sent-events.html">Server-Sent Events Specification.</a>
@@ -10,15 +9,13 @@ import java.util.concurrent.SubmissionPublisher;
  * @author Buhake Sindi
  * @since 09 November 2024
  */
-public class SSEEventProcessor extends SubmissionPublisher<Event> implements Processor<String, Event> {
+public class SSEEventSubscriber implements Subscriber<String>  {
 
 	private static final String UTF8_BOM = "\uFEFF";
 	private static final String DEFAULT_EVENT_TYPE = "message";
 	private static final String COLON = ":";
 	private static final String LF = "\n";
 	private static final char SPACE = ' ';
-	
-	private Subscription subscription;
 	
 	private String comment;
 	private String lastEventId = "";
@@ -27,20 +24,24 @@ public class SSEEventProcessor extends SubmissionPublisher<Event> implements Pro
 	
 	private boolean commentFound = false;
 	private boolean fireCommentEvent = true;
-
+	
+	private Subscription subscription;
+	private EventHandler sseEventHandler;
+	
 	/**
-	 * 
+	 * @param sseEventHandler
 	 */
-	public SSEEventProcessor() {
-		super();
-		//TODO Auto-generated constructor stub
+	public SSEEventSubscriber(EventHandler sseEventHandler) {
+		this(sseEventHandler, false);
 	}
-
+	
 	/**
+	 * @param sseEventHandler
 	 * @param fireCommentEvent
 	 */
-	public SSEEventProcessor(boolean fireCommentEvent) {
+	public SSEEventSubscriber(EventHandler sseEventHandler, boolean fireCommentEvent) {
 		super();
+		this.sseEventHandler = sseEventHandler;
 		this.fireCommentEvent = fireCommentEvent;
 	}
 
@@ -62,11 +63,11 @@ public class SSEEventProcessor extends SubmissionPublisher<Event> implements Pro
 		String input = removeLeadingBOM(item).trim();
 		if (input.isEmpty()) {
 			if (commentFound) {
-				if (fireCommentEvent) submit(new CommentEvent(comment));
+				if (fireCommentEvent) sseEventHandler.onEvent(new CommentEvent(comment));
 			} else {
 				if (eventType.isEmpty()) eventType = DEFAULT_EVENT_TYPE;
 				String data = dataBuffer.toString();
-				submit(new DataMessageEvent(eventType, removeTrailingLineFeed(data), lastEventId));
+				sseEventHandler.onEvent(new DataMessageEvent(eventType, removeTrailingLineFeed(data), lastEventId));
 				eventType = "";
 				dataBuffer.setLength(0);
 			}
@@ -98,7 +99,7 @@ public class SSEEventProcessor extends SubmissionPublisher<Event> implements Pro
 	@Override
 	public void onError(Throwable throwable) {
 		// TODO Auto-generated method stub
-		closeExceptionally(throwable);
+		sseEventHandler.onError(throwable);
 	}
 
 	/* (non-Javadoc)
@@ -110,12 +111,10 @@ public class SSEEventProcessor extends SubmissionPublisher<Event> implements Pro
 		if (dataBuffer.length() > 0) {
 			if (eventType.isEmpty()) eventType = DEFAULT_EVENT_TYPE;
 			String data = dataBuffer.toString();
-			submit(new DataMessageEvent(eventType, removeTrailingLineFeed(data), lastEventId));
+			sseEventHandler.onEvent(new DataMessageEvent(eventType, removeTrailingLineFeed(data), lastEventId));
 			eventType = "";
 			dataBuffer.setLength(0);
 		}
-		
-		close();
 	}
 	
 	private String removeLeadingBOM(final String input) {

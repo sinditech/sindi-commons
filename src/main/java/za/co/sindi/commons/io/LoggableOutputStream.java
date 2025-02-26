@@ -72,6 +72,7 @@ public class LoggableOutputStream extends OutputStream {
 		// TODO Auto-generated method stub
 		flush();
 		super.close();
+		writer.getBuffer().setLength(0);
 		closed = true;
 	}
 	
