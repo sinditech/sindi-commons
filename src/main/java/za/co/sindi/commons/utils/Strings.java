@@ -329,4 +329,22 @@ public final class Strings {
 		
 		return sequence.toString();
 	}
+	
+	/**
+	 * Returns a new String composed of copies of the
+     * {@code Object elements} joined together with a copy of
+     * the specified {@code delimiter}.
+     * 
+	 * @param delimiter the delimiter that separates each element
+	 * @param elements the elements to join together.
+	 * @return a new {@code String} that is composed of the {@code elements}
+     *         separated by the {@code delimiter}
+	 */
+	public static String join(final CharSequence delimiter, final Object... elements) {
+        var elems = new String[elements.length];
+        for (int i = 0; i < elements.length; i++) {
+            elems[i] = String.valueOf(elements[i]);
+        }
+        return String.join(delimiter, elems);
+	}
 }
