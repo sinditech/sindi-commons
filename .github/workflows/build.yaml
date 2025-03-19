@@ -30,8 +30,13 @@ jobs:
     name: Build with JDK ${{matrix.java}} - ${{ matrix.os }}
 
     steps:
+      - name: Import GPG key
+        run: |
+          echo "${{ secrets.GPG_PUBLIC_KEY }}" | gpg --import
+          echo "${{ secrets.GPG_SECRET_KEY }}" | gpg --import --no-tty --batch --yes
+        
       - uses: actions/checkout@v4
-        name: checkout
+        name: Checkout code
 
       - uses: actions/setup-java@v4
         name: Set up JDK ${{matrix.java}}
