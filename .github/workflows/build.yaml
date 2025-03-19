@@ -24,7 +24,7 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest, windows-latest, macos-latest ]
-        java: [17, 21.23]
+        java: [17, 21, 23]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     name: Build with JDK ${{matrix.java}} - ${{ matrix.os }}
@@ -42,4 +42,4 @@ jobs:
           cache-dependency-path: '**/pom.xml'
 
       - name: build with maven
-        run: mvn -B formatter:validate verify --file pom.xml
+        run: mvn -B clean verify
