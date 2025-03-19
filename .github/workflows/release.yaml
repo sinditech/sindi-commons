@@ -7,13 +7,25 @@ on:
  
  jobs:
   release:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Step 1 - Checkout code
-        uses: actions/checkout@v4
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+        java: [17, 21, 23]
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+    name: Build with JDK ${{matrix.java}} - ${{ matrix.os }}
 
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
+    steps:
+      - name: Import GPG key
+        run: |
+          echo "${{ secrets.GPG_PUBLIC_KEY }}" | gpg --import
+          echo "${{ secrets.GPG_SECRET_KEY }}" | gpg --import --no-tty --batch --yes
+        
+      - uses: actions/checkout@v4
+        name: Checkout code
+
+      - uses: actions/setup-java@v4
+        name: Set up JDK ${{matrix.java}}
         with:
           java-version: '21'
           distribution: 'temurin'
@@ -29,7 +41,7 @@ on:
           mvn -B -U --fail-at-end \
             -DskipTests -DskipITs \
             -Dspotless.check.skip=true \
-            -Psign clean deploy
+            -Psign clean deploy -e
         env:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
