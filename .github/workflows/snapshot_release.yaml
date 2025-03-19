@@ -10,14 +10,7 @@ on:
 
 jobs:
   snapshot_release:
-    strategy:
-      matrix:
-        os: [ ubuntu-latest, macos-latest ]
-        java: [17, 21, 23]
-      fail-fast: false
-    runs-on: ${{ matrix.os }}
-    name: Build with JDK ${{matrix.java}} - ${{ matrix.os }}
-
+    runs-on: ubuntu-latest
     steps:
       - name: Import GPG key
         run: |
@@ -28,7 +21,7 @@ jobs:
         name: Checkout code
 
       - uses: actions/setup-java@v4
-        name: Set up JDK ${{matrix.java}}
+        name: Set up JDK 21
         with:
         # Modules specify the oldest java version that they support:
         # even if we build with version 21, produced jars should be compatible with
