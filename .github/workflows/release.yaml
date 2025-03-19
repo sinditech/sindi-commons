@@ -9,7 +9,7 @@ on:
   release:
     strategy:
       matrix:
-        os: [ ubuntu-latest, windows-latest, macos-latest ]
+        os: [ ubuntu-latest, macos-latest ]
         java: [17, 21, 23]
       fail-fast: false
     runs-on: ${{ matrix.os }}
