@@ -7,14 +7,7 @@ on:
  
  jobs:
   release:
-    strategy:
-      matrix:
-        os: [ ubuntu-latest, macos-latest ]
-        java: [17, 21, 23]
-      fail-fast: false
-    runs-on: ${{ matrix.os }}
-    name: Build with JDK ${{matrix.java}} - ${{ matrix.os }}
-
+    runs-on: ubuntu-latest
     steps:
       - name: Import GPG key
         run: |
@@ -25,7 +18,7 @@ on:
         name: Checkout code
 
       - uses: actions/setup-java@v4
-        name: Set up JDK ${{matrix.java}}
+        name: Set up JDK 21
         with:
           java-version: '21'
           distribution: 'temurin'
@@ -36,7 +29,7 @@ on:
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: GPG_PASSPHRASE
 
-      - name: release
+      - name: Release
         run: |
           mvn -B -U --fail-at-end \
             -DskipTests -DskipITs \
