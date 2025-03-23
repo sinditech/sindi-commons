@@ -347,4 +347,21 @@ public final class Strings {
         }
         return String.join(delimiter, elems);
 	}
+	
+	/**
+	 * Removes a substring only if it is at the end of a source string, otherwise returns the source string.
+	 * A null source string will return null. An empty ("") source string will return the empty string. A null search string will return the source string.
+	 * 
+	 * @param sequence
+	 * @param remove
+	 * @return
+	 */
+	public static String removeEnd(final CharSequence sequence, final String remove) {
+		if (!isNullOrEmpty(sequence) && sequence instanceof String str) {
+			int index = str.lastIndexOf(remove);
+			if (index > 0) return str.substring(0, index);
+		}
+		
+		return sequence.toString();
+	}
 }
