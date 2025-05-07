@@ -37,7 +37,7 @@ public final class Classes {
 	}
 	
 	private Classes() {
-		throw new AssertionError("Private Constructor");
+		throw new AssertionError("Private Constructor.");
 	}
 	
 	public static ClassLoader getClassLoader() {
@@ -68,12 +68,7 @@ public final class Classes {
 	}
 	
 	public static Class<?> getClass(final String className, boolean initialize) throws ClassNotFoundException {
-		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-		if (classLoader == null) {
-			classLoader = Classes.class.getClassLoader();
-		}
-		
-		return getClass(classLoader, className, initialize);
+		return getClass(getClassLoader(), className, initialize);
 	}
 	
 	public static Class<?> getClass(ClassLoader classLoader, final String className) throws ClassNotFoundException {

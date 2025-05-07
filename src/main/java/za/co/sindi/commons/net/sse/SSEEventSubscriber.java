@@ -2,6 +2,7 @@ package za.co.sindi.commons.net.sse;
 
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
+import java.util.logging.Logger;
 
 /**
  * The implementation of the <a href="https://html.spec.whatwg.org/multipage/server-sent-events.html">Server-Sent Events Specification.</a>
@@ -10,6 +11,8 @@ import java.util.concurrent.Flow.Subscription;
  * @since 09 November 2024
  */
 public class SSEEventSubscriber implements Subscriber<String>  {
+	
+	private static final Logger LOGGER = Logger.getLogger(SSEEventSubscriber.class.getName());
 
 	private static final String UTF8_BOM = "\uFEFF";
 	private static final String DEFAULT_EVENT_TYPE = "message";
@@ -20,6 +23,7 @@ public class SSEEventSubscriber implements Subscriber<String>  {
 	private String comment;
 	private String lastEventId = "";
 	private String eventType = "";
+	private Integer reconnectionTime;
 	private StringBuilder dataBuffer = new StringBuilder();
 	
 	private boolean commentFound = false;
@@ -67,7 +71,7 @@ public class SSEEventSubscriber implements Subscriber<String>  {
 			} else {
 				if (eventType.isEmpty()) eventType = DEFAULT_EVENT_TYPE;
 				String data = dataBuffer.toString();
-				sseEventHandler.onEvent(new DataMessageEvent(eventType, removeTrailingLineFeed(data), lastEventId));
+				sseEventHandler.onEvent(new DataMessageEvent(eventType, removeTrailingLineFeed(data), lastEventId, reconnectionTime));
 				eventType = "";
 				dataBuffer.setLength(0);
 			}
@@ -111,9 +115,10 @@ public class SSEEventSubscriber implements Subscriber<String>  {
 		if (dataBuffer.length() > 0) {
 			if (eventType.isEmpty()) eventType = DEFAULT_EVENT_TYPE;
 			String data = dataBuffer.toString();
-			sseEventHandler.onEvent(new DataMessageEvent(eventType, removeTrailingLineFeed(data), lastEventId));
+			sseEventHandler.onEvent(new DataMessageEvent(eventType, removeTrailingLineFeed(data), lastEventId, reconnectionTime));
 			eventType = "";
 			dataBuffer.setLength(0);
+			reconnectionTime = null;
 		}
 	}
 	
@@ -141,7 +146,13 @@ public class SSEEventSubscriber implements Subscriber<String>  {
 				if (!value.contains("\0")) lastEventId = value;
 			break;
 			
-			case "retry" : ;
+			case "retry" :
+				try {
+					reconnectionTime = Integer.valueOf(value);
+				} catch (NumberFormatException e) {
+					LOGGER.severe("SSE retry value is not an integer. Found: '" + value + "'.");
+					reconnectionTime = null;
+				}
 			break;
 		}
 	}

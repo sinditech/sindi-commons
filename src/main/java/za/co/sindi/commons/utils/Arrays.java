@@ -3,6 +3,7 @@
  */
 package za.co.sindi.commons.utils;
 
+import java.lang.reflect.Array;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -47,6 +48,27 @@ public class Arrays {
 		}
 		
 		return result;
+	}
+	
+	public static <T> boolean isArrayOfSubtype(Object obj, Class<T> superType) {
+	    if (obj == null) {
+	        return false;
+	    }
+	    Class<?> cls = obj.getClass();
+	    if (!cls.isArray()) {
+	        return false;                                   // not an array
+	    }
+	    Class<?> componentType = cls.getComponentType();    // get element type
+	    // componentType is never null here because cls.isArray() was true
+	    return superType.isAssignableFrom(componentType);   // subtype check
+	}
+	
+	public static boolean isOfType(Object obj, Class<?> expectedComponentType) {
+	    if (obj == null) {
+	        return false;
+	    }
+	    Class<?> objClass = obj.getClass();
+	    return objClass.isArray() && objClass.getComponentType().equals(expectedComponentType);
 	}
 
 	@SafeVarargs
@@ -179,5 +201,22 @@ public class Arrays {
 		}
 		
 		return newArray;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T> T toTypedArray(Object obj) {
+	    if (obj == null || !obj.getClass().isArray()) {
+	        throw new IllegalArgumentException("Not an array: " + obj);
+	    }
+
+	    Class<?> compType = obj.getClass().getComponentType();
+	    int length = Array.getLength(obj);
+	    Object newArray = Array.newInstance(compType, length);
+
+	    for (int i = 0; i < length; i++) {
+	        Array.set(newArray, i, Array.get(obj, i));
+	    }
+
+	    return (T) newArray;
 	}
 }

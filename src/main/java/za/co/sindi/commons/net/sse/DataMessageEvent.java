@@ -9,17 +9,20 @@ public class DataMessageEvent implements MessageEvent {
 	private final String type;
 	private final String data;
 	private final String lastEventId;
+	private final Integer reconnectionTime;
 	
 	/**
 	 * @param type
 	 * @param data
 	 * @param lastEventId
+	 * @param reconnectionTime
 	 */
-	public DataMessageEvent(String type, String data, String lastEventId) {
+	public DataMessageEvent(String type, String data, String lastEventId, Integer reconnectionTime) {
 		super();
 		this.type = type;
 		this.data = data;
 		this.lastEventId = lastEventId;
+		this.reconnectionTime = reconnectionTime;
 	}
 
 	/* (non-Javadoc)
@@ -47,5 +50,11 @@ public class DataMessageEvent implements MessageEvent {
 	public String getLastEventId() {
 		// TODO Auto-generated method stub
 		return lastEventId;
+	}
+
+	@Override
+	public Integer getReconnectionTime() {
+		// TODO Auto-generated method stub
+		return reconnectionTime;
 	}
 }

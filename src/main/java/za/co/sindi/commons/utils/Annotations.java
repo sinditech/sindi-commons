@@ -9,7 +9,6 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 
-
 /**
  * @author Buhake Sindi
  * @since 11 November 2014
@@ -32,9 +31,6 @@ public final class Annotations {
 		
 		if (result == null) {
 			for (Class<?> interfaceClass : clazz.getInterfaces()) {
-//				if (interfaceClass.isAnnotationPresent(annotationClass)) {
-//					return interfaceClass.getAnnotation(annotationClass);
-//				}
 				result = findAnnotation(interfaceClass, annotationClass);
 			}
 		}
@@ -42,7 +38,7 @@ public final class Annotations {
 		if (result == null) {
 			Class<?> superClass = clazz.getSuperclass();
 			if (superClass != null && !superClass.equals(Object.class)) {
-				return findAnnotation(superClass, annotationClass);
+				result = findAnnotation(superClass, annotationClass);
 			}
 		}
 		
@@ -162,5 +158,14 @@ public final class Annotations {
 		if (superClass != null && !superClass.equals(Object.class)) {
 			findMethods(superClass, annotationClass, visitedMethods);
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T> T getAnnotationValue(final Annotation annotation, final String methodName) throws ReflectiveOperationException {
+		Preconditions.checkArgument(annotation != null, "No annotation was provided.");
+		Class<? extends Annotation> annotationType = annotation.annotationType();
+		Method method = annotationType.getDeclaredMethod(methodName, (Class<?>[])null);
+		if (method == null) return null;
+		return (T) method.invoke(annotation, (Object[])null);
 	}
 }

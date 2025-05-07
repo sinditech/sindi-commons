@@ -9,4 +9,5 @@ public interface MessageEvent extends Event {
 	public String getType();
 	public String getData();
 	public String getLastEventId();
+	public Integer getReconnectionTime();
 }
