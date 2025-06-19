@@ -26,14 +26,7 @@ jobs:
       - name: Step 1 - Checkout code
         uses: actions/checkout@v4
 
-      - name: Step 2 - Import GPG secret key
-        run: |
-          cat <(echo -e "${{ secrets.MAVEN_GPG_PRIVATE_KEY }}") | gpg --batch --import
-          gpg --list-secret-keys --keyid-format LONG
-        env:
-          MAVEN_GPG_PRIVATE_KEY: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
-
-      - name: Step 3 - Set up Java and Maven
+      - name: Step 2 - Set up Java and Maven
         uses: actions/setup-java@v4
         with:
           java-version: '17' # Or your desired Java version
@@ -47,6 +40,13 @@ jobs:
           server-password: MAVEN_PASSWORD
           gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
+
+      - name: Step 3 - Import GPG secret key
+        run: |
+          cat <(echo -e "${{ secrets.MAVEN_GPG_PRIVATE_KEY }}") | gpg --batch --import
+          gpg --list-secret-keys --keyid-format LONG
+        env:
+          MAVEN_GPG_PRIVATE_KEY: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
 
       - name: Step 4 - Publish package
         run: mvn --batch-mode deploy -P sindi-release -DskipTests -DskipITs -Dspotless.check.skip=true -e # -P release if you use a profile for release builds
