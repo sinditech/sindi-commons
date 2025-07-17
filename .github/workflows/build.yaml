@@ -1,4 +1,4 @@
-name: Sindi AI MCP - Build
+name: Sindi Commons - Build
 
 on:
   push:
