@@ -34,6 +34,7 @@ jobs:
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
+          cache-dependency-path: '**/pom.xml'
 
       - name: Step 3 - Import GPG secret key
         run: |
