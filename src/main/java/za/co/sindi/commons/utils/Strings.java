@@ -176,6 +176,48 @@ public final class Strings {
 		return sb.toString();
 	}
 	
+	public static String toKebabCase(CharSequence sequence) {
+		if (isNull(sequence)) {
+			return null;
+		}
+		
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < sequence.length(); i++) {
+			char ch = sequence.charAt(i);
+			if (Character.isLetter(ch) && !Character.isLowerCase(ch)) {
+				if (i > 0) sb.append("-");
+				sb.append(Character.toLowerCase(ch));
+			} else if (Character.isWhitespace(ch) || ch == '_'){
+					sb.append("-");
+			} else {
+				sb.append(ch);
+			}
+		}
+		
+		return sb.toString();
+	}
+	
+	public static String toSnakeCase(CharSequence sequence) {
+		if (isNull(sequence)) {
+			return null;
+		}
+		
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < sequence.length(); i++) {
+			char ch = sequence.charAt(i);
+			if (Character.isLetter(ch) && !Character.isLowerCase(ch)) {
+				if (i > 0) sb.append("_");
+				sb.append(Character.toLowerCase(ch));
+			} else if (Character.isWhitespace(ch) || ch == '-'){
+					sb.append("_");
+			} else {
+				sb.append(ch);
+			}
+		}
+		
+		return sb.toString();
+	}
+	
 	public static String toLowerCase(String string) {
 		return toLowerCase(string, Locale.ROOT);
 	}
