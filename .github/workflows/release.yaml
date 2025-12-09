@@ -7,6 +7,19 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      release_version:
+        description: 'Version to release (e.g., 1.0.0)'
+        required: true
+        type: string
+      skip_tests:
+        description: 'Skip running tests before deploy?'
+        required: false
+        default: 'true'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
     
 
 jobs:
@@ -42,10 +55,37 @@ jobs:
         env:
           MAVEN_GPG_PRIVATE_KEY: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
 
-      - name: Step 4 - Publish package
-        run: mvn --batch-mode deploy -DskipTests -DskipITs -Dspotless.check.skip=true -Psign -e # -P release if you use a profile for release builds
+      - name: Step 4 - Set release version
+        run: mvn versions:set -DnewVersion=${{ github.event.inputs.release_version }} -DgenerateBackupPoms=false
+
+      - name: Step 5 - Confirm version
+        run: mvn help:evaluate -Dexpression=project.version -q -DforceStdout
+
+      - name: Step 6 - Publish package
+        run: |
+          if [ "${{ github.event.inputs.skip_tests }}" == "true" ]; then
+            mvn --batch-mode deploy -DskipTests -DskipITs -Dspotless.check.skip=true -Psign -e # -P release if you use a profile for release builds
+          else
+            mvn clean verify deploy -P release -B -U --no-transfer-progress
+          fi
         env:
           MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }} # Passed to the GPG plugin
+
+      - name: Step 7 - Create Git tag for release
+        run: |
+          VERSION=${{ github.event.inputs.release_version }}
+          git tag -a "v$VERSION" -m "Release version $VERSION"
+          git push origin "v$VERSION"
+
+      - name: Step 8 - Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ github.event.inputs.release_version }}
+          name: Release v${{ github.event.inputs.release_version }}
+          body: |
+            Maven Central release version ${{ github.event.inputs.release_version }}
+            - Published automatically via GitHub Actions.
+            - Repository remains on SNAPSHOT for ongoing development.
  
