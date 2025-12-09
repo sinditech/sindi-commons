@@ -5,6 +5,18 @@
 	<groupId>za.co.sindi</groupId>
 	<artifactId>sindi-commons</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	
+	<name>Sindi Commons</name>
+	<description>Common Java utility classes for Sindi Java projects</description>
+	<url>https://github.com/sinditech/sindi-commons</url>
+
+	<licenses>
+		<license>
+			<name>Apache License 2.0</name>
+			<url>https://www.apache.org/licenses/LICENSE-2.0</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 
 	<developers>
 		<developer>
@@ -13,6 +25,8 @@
 			<roles>
 				<role>PROJECT LEAD</role>
 			</roles>
+			<organization>Sindi Technologies (Pty) Ltd</organization>
+			<organizationUrl>https://www.sindi.co.za</organizationUrl>
 		</developer>
 	</developers>
 
@@ -27,6 +41,7 @@
     	<connection>scm:git:git://github.com/sinditech/sindi-commons.git</connection>
     	<developerConnection>scm:git:ssh://github.com:sinditech/sindi-commons.git</developerConnection>
     	<url>http://github.com/sinditech/sindi-commons.git/tree/main</url>
+    	<tag>HEAD</tag>
   	</scm>
 
 	<dependencyManagement>
