@@ -25,6 +25,8 @@ on:
 jobs:
   publish:
     # if: github.event.pull_request.merged == true
+    name: Release on MavenCentral
+    if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write # Needed for creating a release if you automate that part
@@ -47,6 +49,9 @@ jobs:
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
+      - run: |
+          git config --global user.name 'Buhake Sindi'
+          git config --global user.email 'buhake@gmail.com'
 
       - name: Step 3 - Import GPG secret key
         run: |
