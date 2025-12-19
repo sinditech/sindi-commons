@@ -43,7 +43,7 @@ public class CancellableSubscription implements Subscription {
 		if (cancelled.compareAndSet(false, true)) {
 			LOGGER.fine("Subscription cancelled! Executing custom handler.");
 			if (cancellable != null) {
-				cancellable.cancel();;
+				cancellable.cancel();
 			}
 			upstream.cancel();
 		}

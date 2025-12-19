@@ -44,7 +44,7 @@ public class SSEEventLineSubscriber implements Subscriber<List<ByteBuffer>> {
                 String chunk = StandardCharsets.UTF_8.decode(buffer).toString();
                 processChunk(chunk);
             }
-            subscription.request(1); // Request next chunk
+//            subscription.request(1); // Request next chunk
         } catch (Exception e) {
             subscription.cancel();
             onError(e);
