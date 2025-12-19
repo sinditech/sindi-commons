@@ -38,7 +38,7 @@ public class AllEventsEventHandler implements EventHandler {
 		return events.stream();
 	}
 	
-	public boolean iComplete() {
+	public boolean isComplete() {
 		return isComplete.get();
 	}
 	
