@@ -58,7 +58,7 @@ public class CancellablePublisher<T> implements Publisher<T> {
 			}
 
 			@Override
-			public void cancel() {
+			public void onCancel() {
 				// TODO Auto-generated method stub
 				cancellable.run();
 			}

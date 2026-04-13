@@ -1,7 +1,6 @@
 package za.co.sindi.commons.concurrent;
 
 import java.util.Objects;
-import java.util.concurrent.Flow;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
 import java.util.function.Function;
@@ -12,9 +11,8 @@ import java.util.function.Function;
  */
 public class TransformingSubscriber<T, R> implements Subscriber<T> {
 	
-	private final Flow.Subscriber<? super R> downstream;
+	private final Subscriber<? super R> downstream;
     private final Function<? super T, ? extends R> mapper;
-    private Flow.Subscription upstreamSubscription;
 
 	/**
 	 * @param downstream
@@ -29,19 +27,23 @@ public class TransformingSubscriber<T, R> implements Subscriber<T> {
 	@Override
 	public void onSubscribe(Subscription subscription) {
 		// TODO Auto-generated method stub
-		this.upstreamSubscription = subscription;
 		downstream.onSubscribe(subscription);
 	}
 
 	@Override
 	public void onNext(T item) {
 		// TODO Auto-generated method stub
+		boolean done = false;
+		R converted = null;
 		try {
-			downstream.onNext(mapper.apply(item));
+			converted = mapper.apply(item);
+			done = true;
 		} catch (Throwable t) {
-			upstreamSubscription.cancel();
+			done = false;
 			onError(t);
 		}
+		
+		if (done) downstream.onNext(converted);
 	}
 
 	@Override

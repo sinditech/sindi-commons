@@ -6,7 +6,6 @@ package za.co.sindi.commons.concurrent;
 import java.util.Objects;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 /**
@@ -15,7 +14,7 @@ import java.util.function.Consumer;
  */
 public class ConsumingSubscriber<T> implements Subscriber<T> {
 	
-	private final BiConsumer<Subscriber<? super T>, ? super T> nextConsumer;
+	private final Consumer<? super T> nextConsumer;
 	private final Consumer<Throwable> errorConsumer;
 	private final Consumer<Void> completeConsumer;
 	private Subscription subscription;
@@ -23,7 +22,7 @@ public class ConsumingSubscriber<T> implements Subscriber<T> {
 	/**
 	 * @param nextConsumer
 	 */
-	public ConsumingSubscriber(BiConsumer<Subscriber<? super T>, ? super T> nextConsumer) {
+	public ConsumingSubscriber(Consumer<? super T> nextConsumer) {
 		this(nextConsumer, null, null);
 	}
 	
@@ -32,7 +31,7 @@ public class ConsumingSubscriber<T> implements Subscriber<T> {
 	 * @param errorConsumer
 	 * @param completeConsumer
 	 */
-	public ConsumingSubscriber(BiConsumer<Subscriber<? super T>, ? super T> nextConsumer, Consumer<Throwable> errorConsumer, Consumer<Void> completeConsumer) {
+	public ConsumingSubscriber(Consumer<? super T> nextConsumer, Consumer<Throwable> errorConsumer, Consumer<Void> completeConsumer) {
 		super();
 		this.nextConsumer = Objects.requireNonNull(nextConsumer, "A processing consumer is required.");
 		this.errorConsumer = errorConsumer;
@@ -42,14 +41,15 @@ public class ConsumingSubscriber<T> implements Subscriber<T> {
 	@Override
 	public void onSubscribe(Subscription subscription) {
 		// TODO Auto-generated method stub
-		(this.subscription = subscription).request(1L);
+		this.subscription = subscription;
+		subscription.request(1L);
 	}
 
 	@Override
 	public void onNext(T item) {
 		// TODO Auto-generated method stub
 		try {
-			nextConsumer.accept(this, item);
+			nextConsumer.accept(item);
 			subscription.request(1L);
 		} catch (Throwable t) {
 			onError(t);

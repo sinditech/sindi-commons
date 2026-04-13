@@ -13,25 +13,25 @@ import java.util.function.Function;
  * @author Buhake Sindi
  * @since 29 October 2025
  */
-public class TransformingPublisher<T, R> implements Publisher<T> {
+public class TransformingPublisher<T, R> implements Publisher<R> {
 	
-	private final Flow.Publisher<T> upstream;
+	private final Flow.Publisher<T> source;
     private final Function<? super T, ? extends R> mapper;
 
 	/**
-	 * @param upstream
+	 * @param source
 	 * @param mapper
 	 */
-	public TransformingPublisher(Publisher<T> upstream, Function<? super T, ? extends R> mapper) {
+	public TransformingPublisher(Publisher<T> source, Function<? super T, ? extends R> mapper) {
 		super();
-		this.upstream = Objects.requireNonNull(upstream, "Upstream is required.");
-		this.mapper = Objects.requireNonNull(mapper, "A transforming function is required.");
+		this.source = Objects.requireNonNull(source, "The source publisher is required.");
+		this.mapper = Objects.requireNonNull(mapper, "A mapping function is required.");
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public void subscribe(Subscriber<? super T> subscriber) {
+	public void subscribe(Subscriber<? super R> subscriber) {
 		// TODO Auto-generated method stub
-		upstream.subscribe(new TransformingSubscriber(subscriber, mapper));
+		source.subscribe(new TransformingSubscriber(subscriber, mapper));
 	}
 }

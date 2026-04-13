@@ -16,14 +16,14 @@ public class CancellableSubscription implements Subscription {
 
 	private static final Logger LOGGER = Logger.getLogger(CancellableSubscription.class.getName());
 	private final Subscription upstream;
-	private final Cancellable cancellable;
+	private final CancellableSubscriber<?> cancellable;
 	private final AtomicBoolean cancelled = new AtomicBoolean(false);
 	
 	/**
 	 * @param upstream
 	 * @param cancellable
 	 */
-	public CancellableSubscription(Subscription upstream, Cancellable cancellable) {
+	public CancellableSubscription(Subscription upstream, CancellableSubscriber<?> cancellable) {
 		super();
 		this.upstream = Objects.requireNonNull(upstream, "A Flow subscription is required.");
 		this.cancellable = cancellable;
@@ -42,10 +42,10 @@ public class CancellableSubscription implements Subscription {
 		// TODO Auto-generated method stub
 		if (cancelled.compareAndSet(false, true)) {
 			LOGGER.fine("Subscription cancelled! Executing custom handler.");
-			if (cancellable != null) {
-				cancellable.cancel();
-			}
 			upstream.cancel();
+			if (cancellable != null) {
+				cancellable.onCancel();
+			}
 		}
 	}
 }

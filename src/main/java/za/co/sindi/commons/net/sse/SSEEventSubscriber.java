@@ -55,7 +55,8 @@ public class SSEEventSubscriber implements Subscriber<String>  {
 	@Override
 	public void onSubscribe(Subscription subscription) {
 		// TODO Auto-generated method stub
-		(this.subscription = subscription).request(1);
+		this.subscription = subscription;
+		subscription.request(1L);
 	}
 
 	/* (non-Javadoc)
@@ -94,7 +95,7 @@ public class SSEEventSubscriber implements Subscriber<String>  {
 		}
 		
 		//Finally
-		subscription.request(1);
+		subscription.request(1L);
 	}
 
 	/* (non-Javadoc)
