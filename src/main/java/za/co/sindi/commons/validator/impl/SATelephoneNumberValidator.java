@@ -104,7 +104,7 @@ public class SATelephoneNumberValidator implements Validator<String> {
 	private static final Pattern SA_TELEPHONE_NUMBER_REGEXP_PATTERN = Pattern.compile(SA_TELEPHONE_NUMBER_REGEXP);
 
 	@Override
-	public boolean isValid(String value) {
+	public ValidationResult<String> validate(String value) {
 		// TODO Auto-generated method stub
 		if (LOGGER.isLoggable(Level.INFO)) {
 			LOGGER.log(Level.INFO, String.format("Validating potential value of an SA Telephone Number '%s'.", value));
@@ -115,9 +115,9 @@ public class SATelephoneNumberValidator implements Validator<String> {
 			!SA_TELEPHONE_NUMBER_REGEXP_PATTERN.matcher(value).matches()
 		) {
 			LOGGER.log(Level.SEVERE, "Invalid value provided (cannot be a SA Telephone/Mobile Number)");
-			return false;
+			return ValidationResult.errors(value, "Invalid value provided (cannot be a SA Telephone/Mobile Number)");
 		}
 		
-		return true;
+		return ValidationResult.valid(value);
 	}
 }

@@ -26,7 +26,7 @@ public class SAIDNumberValidator implements Validator<String> {
 	private static final Pattern ID_REGEX_PATTERN = Pattern.compile(ID_REGEX_STRING);
 
 	@Override
-	public boolean isValid(String value) {
+	public ValidationResult<String> validate(String value) {
 		// TODO Auto-generated method stub
 		if (LOGGER.isLoggable(Level.INFO)) {
 			LOGGER.log(Level.INFO, String.format("Validating potential value of an SA ID Number '%s'.", value));
@@ -38,7 +38,7 @@ public class SAIDNumberValidator implements Validator<String> {
 			!isValidDate(value) //Check if the date is valid or not...
 		) {
 			LOGGER.log(Level.SEVERE, "Invalid value provided (cannot be a SA ID Number)");
-			return false;
+			return ValidationResult.errors(value, "Invalid value provided (cannot be a SA ID Number)");
 		}
 		
 		//We haven't returned, so the checks and balances are good, let's begin validating checksum....
@@ -64,7 +64,7 @@ public class SAIDNumberValidator implements Validator<String> {
 		int calculatedChecksum = (10 - (sum % 10)) % 10;
 		if (definedChecksum != calculatedChecksum) {
 			LOGGER.log(Level.SEVERE, "Invalid checksum.");
-			return false;
+			return ValidationResult.errors(value, "Invalid checksum.");
 		}
 		
 		//Add info messages here.
@@ -76,7 +76,7 @@ public class SAIDNumberValidator implements Validator<String> {
 			LOGGER.log(Level.INFO, (citizenship == 0) ? "Person is a SA Citizen" : "Person is a permanent citizen");
 		}
 		
-		return true;
+		return ValidationResult.valid(value);
 	}
 
 	private boolean isValidDate(final String dateString) {
